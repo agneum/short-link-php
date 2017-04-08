@@ -1,0 +1,13 @@
+parameters:
+    #parameter_name: value
+
+services:
+    app.link_generator:
+      class: AppBundle\Services\ShortLink
+
+    gedmo.listener.timestampable:
+        class: Gedmo\Timestampable\TimestampableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ @annotation_reader ] ]

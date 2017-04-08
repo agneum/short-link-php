@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="header clearfix">
+            <h1 class="text-muted">Short links</h1>
+        </div>
+
+        <div class="jumbotron">
+            <div class="form-group">
+                <label class="control-label" for="original-link">Input an original link</label>
+                <input type="text" class="form-control" id="original-link" placeholder="http://..">
+            </div>
+
+
+            <p><a class="btn btn-lg btn-success" href="#" role="button">Shorten</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}{% endblock %}
