@@ -1,21 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <div class="container">
-        <div class="header clearfix">
-            <h1 class="text-muted">Short links</h1>
-        </div>
-
-        <div class="jumbotron">
-            <div class="form-group">
-                <label class="control-label" for="original-link">Input an original link</label>
-                <input type="text" class="form-control" id="original-link" placeholder="http://..">
-            </div>
-
-
-            <p><a class="btn btn-lg btn-success" href="#" role="button">Shorten</a></p>
+{% block content %}
+    <div class="form-group" id="orig-link">
+        <label class="control-label" for="original-link">Input an original link</label>
+        <input type="text" class="form-control" id="original-link" placeholder="https://..">
+        <span id="errors-block" class="help-block"></span>
+    </div>
+    <div class="form-group clearfix">
+        <div class="col-md-12 text-center">
+            <a class="btn btn-lg btn-success" href="#" id="shorten">Shorten</a>
         </div>
     </div>
+    <div class="form-group">
+        <input id="result-link" class="form-control" type="text" placeholder="Short link will be here…" readonly>
+    </div>
 {% endblock %}
-
-{% block stylesheets %}{% endblock %}

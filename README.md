@@ -4,7 +4,7 @@ short-link
 # Installation #
 
 * Install composer verdors: ```composer install```
-* Check requirements: ```app/check.php```
+* Check requirements: ```php app/check.php```
 * Check parameters here: ```app/config/parameters.yml```
 * Create a database: ```php app/console doctrine:database:create```
 * Create a database schema: ```php app/console doctrine:schema:create```

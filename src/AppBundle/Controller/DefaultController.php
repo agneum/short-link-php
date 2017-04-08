@@ -22,7 +22,17 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("{code}", name="redirect")
+     * @Route("/link-not-found", name="not-found")
+     * @Method("GET")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function notFoundAction()
+    {
+        return $this->render('default/not-found.html.twig');
+    }
+
+    /**
+     * @Route("/{code}", name="redirect")
      * @Method("GET")
      *
      * @param $code
@@ -33,12 +43,9 @@ class DefaultController extends Controller
         $link = $this->getDoctrine()->getRepository('AppBundle:Link')
             ->findOneBy(['code' => $code, 'disabled' => 0]);
 
-        if (!$link) {
-            $this->addFlash('error', 'Link not found');
-            return $this->redirect($this->generateUrl('homepage'));
-        }
+        $url = ($link) ? $link->getOriginalLink() : $this->generateUrl('not-found');
 
-        return $this->redirect($link->getOriginalLink());
+        return $this->redirect($url);
     }
 
     /**
@@ -68,16 +75,17 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
         $link = $form->getData();
         $link->setCode($this->get('app.link_generator')->generateCode());
+//        $link->setCode('ZDE1Nz');
 
         try {
             $em->persist($link);
             $em->flush();
 
-            $response['result']['url'] = $this->generateUrl('redirect', ['code' => $link->getCode()]);
+            $response['result']['url'] = $this->generateUrl('redirect', ['code' => $link->getCode()], true);
 
         } catch (UniqueConstraintViolationException $e) {
             $response['success'] = false;
-            $response['errors'] = ['Duplicate. Try Again'];
+            $response['errors'] = ['Duplicate code. Try Again'];
         }
 
         return new JsonResponse($response);
