@@ -74,10 +74,13 @@ class DefaultController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $link = $form->getData();
-        $link->setCode($this->get('app.link_generator')->generateCode());
-//        $link->setCode('ZDE1Nz');
 
         try {
+            if (!$generatedCode = $this->get('app.link_generator')->generateCode()) {
+                throw new \Exception('Code has not been generated. Try again');
+            }
+
+            $link->setCode($generatedCode);
             $em->persist($link);
             $em->flush();
 
@@ -86,6 +89,9 @@ class DefaultController extends Controller
         } catch (UniqueConstraintViolationException $e) {
             $response['success'] = false;
             $response['errors'] = ['Duplicate code. Try Again'];
+        } catch (\Exception $e) {
+            $response['success'] = false;
+            $response['errors'] = [$e->getMessage()];
         }
 
         return new JsonResponse($response);

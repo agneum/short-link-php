@@ -10,5 +10,5 @@ short-link
 * Create a database schema: ```php app/console doctrine:schema:create```
 
 ### Run the application: ###
-* Execute the php app/console server:run command.
+* Execute the ```php app/console server:run``` command.
 * Browse to the http://localhost:8000 URL.
