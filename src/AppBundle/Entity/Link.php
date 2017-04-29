@@ -20,6 +20,8 @@ class Link
     const MIN_CODE_LENGTH = 4;
     const MAX_CODE_LENGTH = 6;
 
+    const MAX_ATTEMPTS = 3;
+
     /**
      * @var int
      *

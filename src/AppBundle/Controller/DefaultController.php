@@ -3,7 +3,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Link;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -55,16 +54,15 @@ class DefaultController extends Controller
     public function createLinkAction(Request $request)
     {
         $response = [
-            'success' => true,
+            'success' => false,
             'result' => null,
             'errors' => null
         ];
 
-        $form = $this->createForm('AppBundle\Form\LinkType', new Link(), ['csrf_protection' => false,]);
+        $form = $this->createForm('AppBundle\Form\LinkType', new Link(), ['csrf_protection' => false]);
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
-            $response['success'] = false;
             foreach ($form->getErrors(true) as $error) {
                 $response['errors'][] = $error->getMessage();
             }
@@ -72,26 +70,13 @@ class DefaultController extends Controller
             return new JsonResponse($response);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $link = $form->getData();
+        $link = $this->get('app.link_generator')->completeLink($form->getData());
 
-        try {
-            if (!$generatedCode = $this->get('app.link_generator')->generateCode()) {
-                throw new \Exception('Code has not been generated. Try again');
-            }
-
-            $link->setCode($generatedCode);
-            $em->persist($link);
-            $em->flush();
-
+        if ($link instanceof Link) {
+            $response['success'] = true;
             $response['result']['url'] = $this->generateUrl('redirect', ['code' => $link->getCode()], true);
-
-        } catch (UniqueConstraintViolationException $e) {
-            $response['success'] = false;
-            $response['errors'] = ['Duplicate code. Try Again'];
-        } catch (\Exception $e) {
-            $response['success'] = false;
-            $response['errors'] = [$e->getMessage()];
+        } else {
+            $response['errors'] = ['An error occurred while generating the link, please try again.'];
         }
 
         return new JsonResponse($response);

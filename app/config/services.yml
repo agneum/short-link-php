@@ -4,6 +4,7 @@ parameters:
 services:
     app.link_generator:
       class: AppBundle\Services\ShortLink
+      arguments: ["@doctrine.orm.entity_manager", "@logger"]
 
     gedmo.listener.timestampable:
         class: Gedmo\Timestampable\TimestampableListener
